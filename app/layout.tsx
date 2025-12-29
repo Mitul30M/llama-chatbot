@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,16 +31,6 @@ export default function RootLayout({
           <main className="flex min-h-screen w-full max-w-3xl flex-col items-center gap-10 py-28 px-16 bg-white dark:bg-black sm:items-start">
             {children}
 
-            <footer className="w-full mt-10">
-              <Image
-                className="dark:invert w-full object-contain"
-                src="/ollama-footer.png"
-                alt="Ollama Footer"
-                width={1200}
-                height={100}
-                priority
-              />
-            </footer>
           </main>
         </div>
       </body>

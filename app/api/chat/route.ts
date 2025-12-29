@@ -2,7 +2,7 @@ import {
   streamText,
   UIMessage,
   convertToModelMessages,
-  generateText,
+  // generateText,
 } from "ai";
 import { ollama } from "ai-sdk-ollama";
 
