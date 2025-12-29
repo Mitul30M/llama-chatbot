@@ -1,4 +1,9 @@
-import { streamText, UIMessage, convertToModelMessages } from "ai";
+import {
+  streamText,
+  UIMessage,
+  convertToModelMessages,
+  generateText,
+} from "ai";
 import { ollama } from "ai-sdk-ollama";
 
 export async function POST(req: Request) {
@@ -6,8 +11,10 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: ollama("llama3.2"),
+    system:'You are an assistant who answers user queries',
     messages: await convertToModelMessages(messages),
   });
 
   return result.toUIMessageStreamResponse();
 }
+
