@@ -1,5 +1,10 @@
 ## Llama Chatbot
 
+<img width="1126" height="648" alt="Screenshot 2025-12-30 132236" src="https://github.com/user-attachments/assets/79c1cc53-eb80-461a-92b6-bf4f50245d8f" />
+<img width="1919" height="1079" alt="Screenshot 2025-12-30 131628" src="https://github.com/user-attachments/assets/1485b905-a5be-4bb9-a94e-ac8524c26bff" />
+<img width="1919" height="1079" alt="Screenshot 2025-12-30 131703" src="https://github.com/user-attachments/assets/7c8d087d-01db-4104-9b7c-7b5125da1ff3" />
+
+
 A modern, streaming AI chat experience built with **Next.js 16**, **React 19**, and the **Vercel AI SDK**, powered locally by **Ollama** with the `llama3.2` model.
 
 This app lives in the `llama-chatbot` directory and exposes:
