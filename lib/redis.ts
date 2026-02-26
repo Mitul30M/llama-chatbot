@@ -15,7 +15,16 @@ client.on("error", (err) => {
   }
 });
 
-export async function pushLogToStream(streamName: string, data: Record<string, string>) {
+/**
+ * Pushes log data to a Redis stream.
+ * @param {string} streamName - name of the Redis stream to push to.
+ * @param {Record<string, string>} data - log data to push, where each key is a field name and each value is a string value for that field.
+ * @returns {Promise<number | null>} XADD result (number of elements in the stream after pushing) or null if failed.
+ */
+export async function pushLogToStream(
+  streamName: string,
+  data: Record<string, string>,
+) {
   try {
     const entries: string[] = [];
     for (const [k, v] of Object.entries(data)) {
@@ -34,6 +43,12 @@ export async function pushLogToStream(streamName: string, data: Record<string, s
   }
 }
 
+/**
+ * Publishes a message to a Redis channel.
+ * @param {string} channel - name of the Redis channel to publish to.
+ * @param {string} message - message to publish.
+ * @returns {Promise<number | null>} number of clients that received the message or null if failed.
+ */
 export async function publish(channel: string, message: string) {
   try {
     return await client.publish(channel, message);

@@ -40,6 +40,14 @@ const logger = winston.createLogger({
   exitOnError: false,
 });
 
+/**
+ * Log a message to the local Winston logger and stream it to Redis
+ * using the pushLogToStream function (best-effort).
+ *
+ * @param {string} level - One of "error", "warn", "info", or "verbose"
+ * @param {string} message - The log message
+ * @param {Record<string, unknown> | undefined} [meta] - Optional metadata
+ */
 async function logAndStream(level: string, message: string, meta?: Record<string, unknown>) {
   // Log locally
   (logger as any)[level]?.(message, meta ?? {});

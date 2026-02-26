@@ -7,7 +7,7 @@ services:
       - "6379:6379"
     volumes:
       - redis-data:/data
-    command: ["redis-server","--appendonly","yes"]
+    command: ["redis-server", "--appendonly", "yes"]
 
   web:
     build: .
@@ -18,6 +18,7 @@ services:
       # inside compose network the redis host is "redis"
       - REDIS_URL=redis://redis:6379
       - NODE_ENV=production
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY}
       # allow the web container to reach the Ollama daemon running on the host
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
     volumes:
