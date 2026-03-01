@@ -30,35 +30,45 @@ export async function POST(req: Request) {
       system: "You are an assistant who answers user queries",
       messages: await convertToModelMessages(messages),
       onError: (err) => {
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      logger.error("chat.post.stream.error", {
-        error: JSON.stringify(err),
-      });
-      logAndStream("error", "chat.post.stream.error", {
-        error: JSON.stringify(err),
-      });
+        const errorMessage =
+          err instanceof Error ? err.message : JSON.stringify(err);
+        // console.log("Error in streamTexts:", JSON.stringify(err));
+        logger.error("chat.post.stream.error", {
+          error: JSON.stringify(err),
+          statusCode: (err as any)?.statusCode || "503",
+          route: "/api/chat",
+          method: "POST",
+        });
+        logAndStream("error", "chat.post.stream.error", {
+          error: JSON.stringify(err),
+          statusCode: (err as any)?.statusCode || "503",
+          route: "/api/chat",
+          method: "POST",
+        });
       },
       onAbort: () => {
-      logger.warn("chat.post.stream.aborted", {
-        messageID: messages[messages.length - 1].id,
-      });
-      logAndStream("warn", "chat.post.stream.aborted", {
-        messageID: messages[messages.length - 1].id,
-      });
+        logger.warn("chat.post.stream.aborted", {
+          messageID: messages[messages.length - 1].id,
+        });
+        logAndStream("warn", "chat.post.stream.aborted", {
+          messageID: messages[messages.length - 1].id,
+        });
       },
       onFinish: () => {
-      logger.info("chat.post.stream.completed", {
-        durationMs: Date.now() - start,
-        messageID: messages[messages.length - 1].id,
-      });
-      logAndStream("info", "chat.post.stream.completed", {
-        durationMs: Date.now() - start,
-        messageID: messages[messages.length - 1].id,
-      });
+        logger.info("chat.post.stream.completed", {
+          durationMs: Date.now() - start,
+          messageID: messages[messages.length - 1].id,
+        });
+        logAndStream("info", "chat.post.stream.completed", {
+          durationMs: Date.now() - start,
+          messageID: messages[messages.length - 1].id,
+        });
       },
     });
+
     return result.toUIMessageStreamResponse();
   } catch (err) {
+    console.log("Error in chat.post:", err);
     // log error and rethrow
     logger.error("chat.post.error", { error: (err as Error)?.message || err });
     // try {
