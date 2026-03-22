@@ -25,8 +25,11 @@ export async function POST(req: Request) {
           })
         : defaultOllama;
 
+    // Fixed: Use environment variable for model name with fallback to a valid default
+    const modelName = process.env.OLLAMA_MODEL_NAME || "llama2";
+
     const result = streamText({
-      model: ollamaProvider("wrong-model-name"),
+      model: ollamaProvider(modelName),
       system: "You are an assistant who answers user queries",
       messages: await convertToModelMessages(messages),
       onError: (err) => {
