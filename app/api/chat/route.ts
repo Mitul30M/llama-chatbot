@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         : defaultOllama;
 
     const result = streamText({
-      model: ollamaProvider("gpt-oss:120b-cloud"),
+      model: ollamaProvider("wrong-model-name"),
       system: "You are an assistant who answers user queries",
       messages: await convertToModelMessages(messages),
       onError: (err) => {
