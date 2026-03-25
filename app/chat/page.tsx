@@ -38,13 +38,34 @@ const ConversationDemo = () => {
   );
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
+  const logClientEvent = async (
+    level: "info" | "warn" | "error",
+    event: string,
+    meta?: Record<string, unknown>
+  ) => {
+    try {
+      await fetch("/api/client-log", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ level, event, meta }),
+      });
+    } catch {
+      // Logging must never break user interactions.
+    }
+  };
+
   const handleSubmit = (
     message: PromptInputMessage,
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
-    if (message.text.trim()) {
-      sendMessage({ text: message.text });
+    const trimmedMessage = message.text.trim();
+
+    if (trimmedMessage) {
+      void logClientEvent("info", "chat.ui.submit", {
+        length: trimmedMessage.length,
+      });
+      sendMessage({ text: trimmedMessage });
     }
   };
 
@@ -53,8 +74,16 @@ const ConversationDemo = () => {
       await navigator.clipboard.writeText(text);
       setCopiedMessageId(messageId);
       setTimeout(() => setCopiedMessageId(null), 2000);
+      void logClientEvent("info", "chat.ui.copy.success", {
+        messageId,
+        length: text.length,
+      });
     } catch (error) {
       console.error("Failed to copy text:", error);
+      void logClientEvent("warn", "chat.ui.copy.failed", {
+        messageId,
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
   };
 
@@ -207,6 +236,10 @@ const ConversationDemo = () => {
                   onClick={(e) => {
                     if (isStreaming) {
                       e.preventDefault();
+                      void logClientEvent("warn", "chat.ui.stream.stop_clicked", {
+                        status,
+                        messageCount: messages.length,
+                      });
                       stop();
                     }
                   }}

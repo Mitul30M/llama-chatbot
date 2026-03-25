@@ -10,7 +10,15 @@ import { logAndStream, logger } from "../../../lib/logger";
 export async function POST(req: Request) {
   const start = Date.now();
   try {
-    const { messages }: { messages: UIMessage[] } = await req.json();
+    const {
+      messages,
+      injectError,
+    }: { messages: UIMessage[]; injectError?: boolean } = await req.json();
+
+    if (process.env.INJECT_CHAT_ROUTE_ERROR === "1" && injectError === true) {
+      throw new Error("Injected chat route failure for testing");
+    }
+
     await logAndStream("info", "chat.post.received", {
       messageCount: messages?.length ?? 0,
       messageRole: messages?.[messages.length - 1]?.role,
@@ -26,12 +34,10 @@ export async function POST(req: Request) {
         : defaultOllama;
 
     const result = streamText({
-      model: ollamaProvider("wrong-model-name"),
+      model: ollamaProvider("gpt-oss:120b-cloud"),
       system: "You are an assistant who answers user queries",
       messages: await convertToModelMessages(messages),
       onError: (err) => {
-        const errorMessage =
-          err instanceof Error ? err.message : JSON.stringify(err);
         // console.log("Error in streamTexts:", JSON.stringify(err));
         logger.error("chat.post.stream.error", {
           error: JSON.stringify(err),
